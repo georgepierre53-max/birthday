@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Birthday</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: black; font-family: 'Courier New', Courier, monospace; }
+        canvas { display: block; }
+        #overlay {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff3399; /* Pink color from your video */
+            text-align: center;
+            font-size: 5rem;
+            font-weight: bold;
+            pointer-events: none;
+            text-shadow: 0 0 20px #ff3399;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <div id="overlay"></div>
+
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        const overlay = document.getElementById('overlay');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#ff3399"; // Pink Matrix Rain
+            ctx.font = fontSize + "px arial";
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters.charAt(Math.floor(Math.random() * letters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        // Sequence Logic
+        const sequence = ["3", "2", "1", "HAPPY", "BIRTHDAY", "TO MY", "KAVIYA"];
+        let step = 0;
+
+        function updateOverlay() {
+            if (step < sequence.length) {
+                overlay.innerText = sequence[step];
+                step++;
+                setTimeout(updateOverlay, 1500); // Change text every 1.5 seconds
+            } else {
+                overlay.innerHTML += "<br><span style='font-size:2rem'>❤️</span>";
+            }
+        }
+
+        setInterval(drawMatrix, 33);
+        setTimeout(updateOverlay, 1000);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
